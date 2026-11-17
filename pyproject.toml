@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qmind-reasoning"
+version = "0.1.0"
+description = "QMIND reproductions and extensions: first-error localization and DCoT reasoning refinement."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Lightweight tooling: tests only, no model downloads.
+dev = [
+    "pytest>=8.0",
+]
+# Heavy dependencies needed only when actually running experiments.
+# Install torch separately first if you need a specific CUDA build.
+experiments = [
+    "numpy>=1.26",
+    "torch>=2.2",
+    "transformers>=4.44",
+    "datasets>=2.20",
+    "accelerate>=0.33",
+    "peft>=0.12",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

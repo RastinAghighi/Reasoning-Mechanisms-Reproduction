@@ -1,0 +1,33 @@
+# Experiment 2 — DCoT (Divergent Chain-of-Thought) reasoning refinement.
+# See experiments/02_dcot_refinement/README.md and docs/RESEARCH_PLAN.md.
+#
+# Before any reported run: pin all revisions and confirm the adapter ID and
+# evaluation datasets against the DCoT paper / released code.
+extends: base.yaml
+
+name: 02_dcot_refinement
+description: >
+  Reproduce DCoT results for Phi-1.5 with the released DCoT adapter
+  (multiple reasoning chains in one inference pass, self-refinement).
+tags: [dcot, phi-1.5, peft]
+
+models:
+  dcot:
+    id: microsoft/phi-1_5
+    revision: null        # TODO: pin
+    dtype: float32        # TODO: confirm precision used in the paper
+    adapter_id: null      # TODO: released DCoT adapter ID for Phi-1.5 (verify from paper/repo)
+    adapter_revision: null
+
+datasets:
+  gsm8k:                  # placeholder first target; full eval suite TBD from the paper
+    id: openai/gsm8k
+    config_name: main
+    revision: null        # TODO: pin
+    splits: [test]
+    sample_size: null
+
+params:                   # provisional; finalize when the pipeline is implemented
+  num_chains: [1, 2, 3, 4]   # k in DCoT@k
+  max_new_tokens: 1024
+  do_sample: false

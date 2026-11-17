@@ -1,0 +1,51 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Environments & secrets ---
+.venv/
+venv/
+env/
+.env
+
+# --- Model weights, caches, datasets (never commit) ---
+.cache/
+hf_cache/
+data/
+models/
+checkpoints/
+wandb/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+*.onnx
+*.arrow
+*.parquet
+
+# --- Generated results ---
+# Run directories are local artifacts. Small, curated summaries that back
+# claims in docs/ go in results/summaries/ and ARE tracked.
+results/*
+!results/README.md
+!results/summaries/
+results/summaries/*
+!results/summaries/.gitkeep
+!results/summaries/*.md
+!results/summaries/*.csv
+!results/summaries/*.json
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

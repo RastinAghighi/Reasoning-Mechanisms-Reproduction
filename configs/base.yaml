@@ -1,0 +1,7 @@
+# Shared defaults. Experiment configs inherit with `extends: base.yaml`.
+# Schema: src/qmind_reasoning/config.py (unknown keys are rejected).
+name: base
+seed: 42
+output_root: results   # relative to the project root; run dirs are git-ignored
+tags: []
+notes: ""

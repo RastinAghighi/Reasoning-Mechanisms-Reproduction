@@ -1,0 +1,36 @@
+# Experiment 1 — first-error localization on ProcessBench.
+# See experiments/01_error_localization/README.md and docs/RESEARCH_PLAN.md.
+#
+# Before any reported run: set every `revision` to a commit hash from the
+# Hugging Face Hub and fill the TODO IDs. Runs record unpinned fields in
+# metadata.json so nothing silently drifts.
+extends: base.yaml
+
+name: 01_error_localization
+description: >
+  Reproduce SPARE-PRM first-error localization on ProcessBench; extend with
+  token entropy / varentropy from Qwen2.5-Math-7B-Instruct as a
+  training-free localization signal.
+tags: [processbench, prm, entropy]
+
+models:
+  prm:
+    id: null              # TODO: released SPARE-PRM checkpoint ID (verify from paper/repo)
+    revision: null
+    dtype: bfloat16
+  policy:                 # used for entropy / varentropy (extension)
+    id: Qwen/Qwen2.5-Math-7B-Instruct
+    revision: null        # TODO: pin
+    dtype: bfloat16
+
+datasets:
+  processbench:
+    id: Qwen/ProcessBench
+    revision: null        # TODO: pin
+    splits: [gsm8k, math, olympiadbench, omnimath]
+    sample_size: null     # null = full split; use e.g. --set datasets.processbench.sample_size=20 for smoke tests
+
+params:                   # provisional; finalize when the pipeline is implemented
+  batch_size: 1
+  max_length: 4096
+  uncertainty_signals: [entropy, varentropy]
