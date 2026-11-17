@@ -22,8 +22,8 @@ dev = [
 experiments = [
     "numpy>=1.26",
     "torch>=2.2",
-    "transformers>=4.44",
-    "datasets>=2.20",
+    "transformers>=4.56,<5",   # `dtype=` kwarg; v5 changes loading defaults
+    "jinja2>=3.1",             # chat templates
     "accelerate>=0.33",
     "peft>=0.12",
 ]
@@ -34,3 +34,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "integration: needs network access to download real data or tokenizers (set QMIND_INTEGRATION=1)",
+    "model: downloads model weights and runs inference (set QMIND_MODEL_TESTS=1)",
+]

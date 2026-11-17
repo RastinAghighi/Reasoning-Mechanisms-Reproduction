@@ -19,7 +19,18 @@ def test_experiment_1_contents():
     cfg = load_config(CONFIGS_DIR / "01_error_localization.yaml")
     assert cfg.models["policy"].id == "Qwen/Qwen2.5-Math-7B-Instruct"
     assert cfg.datasets["processbench"].id == "Qwen/ProcessBench"
-    assert set(cfg.datasets["processbench"].splits) == {"gsm8k", "math", "olympiadbench", "omnimath"}
+    assert cfg.datasets["processbench"].splits == ("gsm8k",)
+    assert cfg.datasets["processbench"].revision  # pinned
+    assert cfg.datasets["processbench"].sample_size is None
+
+
+@pytest.mark.parametrize("profile, size", [("smoke", 20), ("dev", 100)])
+def test_experiment_1_profiles(profile, size):
+    cfg = load_config(CONFIGS_DIR / f"01_error_localization_{profile}.yaml")
+    full = load_config(CONFIGS_DIR / "01_error_localization.yaml")
+    assert cfg.name == full.name and cfg.seed == full.seed
+    assert cfg.datasets["processbench"].sample_size == size
+    assert cfg.datasets["processbench"].revision == full.datasets["processbench"].revision
 
 
 def test_experiment_2_contents():

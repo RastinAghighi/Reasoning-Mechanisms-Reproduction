@@ -49,7 +49,7 @@ def test_init_run_creates_layout(tmp_path, config):
     assert meta["overrides"] == ["seed=3"]
     assert meta["status"] == "initialized"
     assert "available" in meta["git"]
-    assert "models.prm.id" in meta["unpinned_revisions"]
+    assert "models.policy.revision" in meta["unpinned_revisions"]
 
 
 def test_run_ids_do_not_collide(tmp_path, config):

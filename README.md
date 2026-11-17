@@ -9,6 +9,7 @@ where they go wrong:
 | 2 | [DCoT reasoning refinement](experiments/02_dcot_refinement/README.md) | Phi-1.5 with the released DCoT adapter | Analysis of when and how refinement across chains helps |
 
 - **Research plan:** [`docs/RESEARCH_PLAN.md`](docs/RESEARCH_PLAN.md) — questions, methods, and the reproduction/extension boundary.
+- **Experiment 1 methodology:** [`docs/EXPERIMENT_01_METHODOLOGY.md`](docs/EXPERIMENT_01_METHODOLOGY.md) — data handling and evaluation design.
 - **Experiment log:** [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md) — decisions, failures, fixes, results.
 
 ## Setup

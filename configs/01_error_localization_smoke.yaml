@@ -1,0 +1,6 @@
+# Experiment 1 — smoke-test profile: 20 examples, for checking the pipeline end to end.
+extends: 01_error_localization.yaml
+tags: [processbench, smoke]
+datasets:
+  processbench:
+    sample_size: 20

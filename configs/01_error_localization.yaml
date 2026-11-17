@@ -1,9 +1,6 @@
-# Experiment 1 — first-error localization on ProcessBench.
-# See experiments/01_error_localization/README.md and docs/RESEARCH_PLAN.md.
-#
-# Before any reported run: set every `revision` to a commit hash from the
-# Hugging Face Hub and fill the TODO IDs. Runs record unpinned fields in
-# metadata.json so nothing silently drifts.
+# Experiment 1 — first-error localization on ProcessBench (full-dataset profile).
+# Profiles: 01_error_localization_smoke.yaml (20), _dev.yaml (100), this file (all 400).
+# See experiments/01_error_localization/README.md and docs/EXPERIMENT_01_METHODOLOGY.md.
 extends: base.yaml
 
 name: 01_error_localization
@@ -11,14 +8,14 @@ description: >
   Reproduce SPARE-PRM first-error localization on ProcessBench; extend with
   token entropy / varentropy from Qwen2.5-Math-7B-Instruct as a
   training-free localization signal.
-tags: [processbench, prm, entropy]
+tags: [processbench, prm, entropy, full]
 
 models:
-  prm:
-    id: null              # TODO: released SPARE-PRM checkpoint ID (verify from paper/repo)
-    revision: null
-    dtype: bfloat16
-  policy:                 # used for entropy / varentropy (extension)
+  prm:                    # released SPARE-PRM (Qwen2.5-3B, trained on MATH generations)
+    id: UKPLab/Qwen2.5-3b-spare-prm-math
+    revision: a4f77040cadc6a0f5f7758ec42d3f999376aef4a   # HF commit, 2026-03-31
+    dtype: bfloat16       # checkpoint dtype; float32 matches the model-card example exactly
+  policy:                 # used for entropy / varentropy (extension, not implemented)
     id: Qwen/Qwen2.5-Math-7B-Instruct
     revision: null        # TODO: pin
     dtype: bfloat16
@@ -26,11 +23,16 @@ models:
 datasets:
   processbench:
     id: Qwen/ProcessBench
-    revision: null        # TODO: pin
-    splits: [gsm8k, math, olympiadbench, omnimath]
-    sample_size: null     # null = full split; use e.g. --set datasets.processbench.sample_size=20 for smoke tests
+    revision: 3bdcd5371ed567559a78f559c01c13a6deee7604   # HF commit, 2024-12-27
+    splits: [gsm8k]       # 400 examples; other splits: math, olympiadbench, omnimath
+    sample_size: null     # null = full split
 
-params:                   # provisional; finalize when the pipeline is implemented
-  batch_size: 1
-  max_length: 4096
-  uncertainty_signals: [entropy, varentropy]
+params:
+  stratify_sampling: true   # keep the correct/error ratio in subsamples
+  dev_size: 100             # dev = the 100-example dev profile; the other 300 are held out
+  spare:
+    device: auto            # auto | cpu | cuda | cuda:N  (or restrict with CUDA_VISIBLE_DEVICES)
+    batch_size: 1           # authors used 4; batch size can change low-order bits only
+    max_tokens: 4096        # longer inputs are reported as errors, never truncated
+    deterministic: true
+    reasoning_trigger: "Let's think step by step.\n"   # as in the model-card example

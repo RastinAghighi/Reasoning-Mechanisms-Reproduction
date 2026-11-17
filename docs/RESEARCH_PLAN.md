@@ -28,14 +28,21 @@ and with training-free uncertainty signals from the generating model?
 
 - **Benchmark.** ProcessBench (`Qwen/ProcessBench`): solutions annotated with
   the index of the first erroneous step, or −1 if fully correct. Subsets:
-  GSM8K, MATH, OlympiadBench, Omni-MATH.
+  GSM8K, MATH, OlympiadBench, Omni-MATH. Current scope: GSM8K (400); see
+  [`EXPERIMENT_01_METHODOLOGY.md`](EXPERIMENT_01_METHODOLOGY.md).
 - **Method.** Score each step with the released SPARE-PRM checkpoint; the
   predicted first error is the first step whose score falls below a threshold
-  (threshold selection procedure: **TBD**, follow the paper).
+  (ProcessBench protocol: best-F1 threshold on GSM8K; here: tuned on the
+  100 dev examples only, never on held-out labels).
 - **Metric.** ProcessBench F1: harmonic mean of exact-match accuracy on
   erroneous samples and on correct samples, per subset and averaged.
-- **Target.** The SPARE-PRM ProcessBench numbers reported in the paper
-  (exact table and tolerance: **TBD**, recorded in the log before running).
+- **Target.** SPARE paper Table 3 (SPARE-Qwen2.5-3B): MATH 16.0 / 89.2 / 27.1,
+  OlympiadBench 11.1 / 85.0 / 19.6, Omni-MATH 14.0 / 83.8 / 23.9 (error / correct / F1).
+  **No GSM8K number is published**, because ProcessBench uses GSM8K to select the threshold.
+  Our GSM8K results are therefore a measurement, not a reproduction. Whether to add the
+  MATH split for a strict reproduction is an open decision
+  ([methodology §7.4](EXPERIMENT_01_METHODOLOGY.md#74-what-can-and-cannot-be-compared-with-the-paper)).
+  The implementation is first checked against the model card's published example scores.
 
 ### 1B. Extension: entropy and varentropy as localization signals
 

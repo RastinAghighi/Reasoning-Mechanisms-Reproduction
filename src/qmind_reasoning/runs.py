@@ -28,7 +28,9 @@ import yaml
 from qmind_reasoning.config import ExperimentConfig
 from qmind_reasoning.paths import PROJECT_ROOT, resolve_output_root
 
-TRACKED_PACKAGES = ("pyyaml", "numpy", "torch", "transformers", "datasets", "accelerate", "peft")
+TRACKED_PACKAGES = (
+    "pyyaml", "numpy", "torch", "transformers", "tokenizers", "jinja2", "datasets", "accelerate", "peft",
+)
 RUN_SUBDIRS = ("artifacts", "logs")
 
 
@@ -88,6 +90,28 @@ def init_run(
 
     _write_json(run_dir / "metadata.json", collect_metadata(config, run_id, list(overrides)))
     return RunContext(run_id=run_id, run_dir=run_dir, config=config)
+
+
+def open_run(run_dir: str | Path) -> RunContext:
+    """Re-open an existing run (for resuming) using its frozen config.
+
+    The saved config must hash to the fingerprint recorded at creation, so a
+    resumed run cannot silently continue under different settings.
+    """
+    from qmind_reasoning.config import from_dict  # local: avoid widening the module API
+
+    run_dir = Path(run_dir).resolve()
+    config_path, meta_path = run_dir / "config.yaml", run_dir / "metadata.json"
+    if not config_path.is_file() or not meta_path.is_file():
+        raise FileNotFoundError(f"{run_dir} is not a run directory (config.yaml/metadata.json missing)")
+    config = from_dict(yaml.safe_load(config_path.read_text(encoding="utf-8")))
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if config.fingerprint() != meta["config_fingerprint"]:
+        raise ValueError(f"{config_path} no longer matches its recorded fingerprint; refusing to resume")
+    run = RunContext(run_id=meta["run_id"], run_dir=run_dir, config=config)
+    resumes = meta.get("resumed_utc", [])
+    run.update_metadata(status="resumed", resumed_utc=[*resumes, _utc_now()])
+    return run
 
 
 def collect_metadata(config: ExperimentConfig, run_id: str, overrides: list[str]) -> dict[str, Any]:

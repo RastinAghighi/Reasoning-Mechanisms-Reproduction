@@ -1,0 +1,7 @@
+# Experiment 1 — development profile: 100 examples, for iterating on methods.
+# Never report dev-profile numbers as benchmark results.
+extends: 01_error_localization.yaml
+tags: [processbench, dev]
+datasets:
+  processbench:
+    sample_size: 100

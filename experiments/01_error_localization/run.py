@@ -19,7 +19,7 @@ DEFAULT_CONFIG = CONFIGS_DIR / "01_error_localization.yaml"
 
 
 def main(argv: list[str] | None = None) -> int:
-    config, run = prepare(DEFAULT_CONFIG, __doc__.splitlines()[0], argv)
+    _, run, _ = prepare(DEFAULT_CONFIG, __doc__.splitlines()[0], argv)
     if run is None:
         return 0
     run.finish(status="not_implemented")

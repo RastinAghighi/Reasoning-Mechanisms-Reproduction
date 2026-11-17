@@ -30,5 +30,8 @@ def set_seed(seed: int, deterministic: bool = False) -> None:
     torch.cuda.manual_seed_all(seed)
     if deterministic:
         os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
-        torch.use_deterministic_algorithms(True)
+        # warn_only: ops without a deterministic kernel warn instead of crashing a long run
+        torch.use_deterministic_algorithms(True, warn_only=True)
         torch.backends.cudnn.benchmark = False
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
